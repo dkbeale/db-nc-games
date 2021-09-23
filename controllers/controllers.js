@@ -3,6 +3,8 @@ const {
   fetchReview,
   patchReviewVote,
   fetchAllReviews,
+  fetchCommentsByReview,
+  createComment,
 } = require("../models/models");
 
 exports.getCategories = (req, res, next) => {
@@ -39,8 +41,30 @@ exports.patchReviewVoteById = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-  fetchAllReviews()
-    .then((reviews) => {
-      res.status(200).send({ reviews: reviews})
+  fetchAllReviews().then((reviews) => {
+    res.status(200).send({ reviews: reviews });
+  });
+};
+
+exports.getCommentsByReview = (req, res, next) => {
+  const { review_id: reviewId } = req.params;
+  fetchCommentsByReview(reviewId)
+    .then((comments) => {
+      //console.log({comments: comments})
+      res.status(200).send({ comments: comments });
     })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.postCommentById = (req, res, next) => {
+  const { review_id: reviewId } = req.params;
+  const { username: userName, body: body } = req.body;
+  createComment(userName, reviewId, body)
+    .then((comment) => {
+      res.status(201).send({ comment: comment })
+    }).catch((err) => {
+      next(err)
+    });
 };
