@@ -3,6 +3,7 @@ const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const request = require("supertest");
 const app = require("../app");
+const { get } = require("superagent");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -210,6 +211,27 @@ describe('POST /api/reviews/:review_id/comments', () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Bad Request, User Does Not Exist")
+      })
+  });
+});
+
+describe('GET /api/', () => {
+  test('200: responds with a JSON object of the endpoints', () => {
+    return request(app)
+      .get(`/api`)
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual({
+          endpoints: {
+            getCategories: "/api/categories",
+            getReviewById: "/api/reviews/:review_id",
+            patchReviewVoteById: "/api/reviews/:review_id",
+            getReviews: "/api/reviews",
+            getCommentsByReview: "/api/reviews/:review_id/comments",
+            postComment: "/api/reviews/:review_id/comments",
+            getApiEndpoints: "/api"
+          }
+        })
       })
   });
 });

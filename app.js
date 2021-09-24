@@ -5,7 +5,8 @@ const {
   patchReviewVoteById,
   getReviews,
   getCommentsByReview,
-  postCommentById
+  postCommentById,
+  getEndpoints
 } = require("./controllers/controllers");
 const app = express();
 const { handle404Err, handle400Err } = require("./errors/errors");
@@ -19,6 +20,7 @@ app.patch("/api/reviews/:review_id", patchReviewVoteById);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id/comments", getCommentsByReview);
 app.post("/api/reviews/:review_id/comments", postCommentById)
+app.get("/api", getEndpoints)
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Not Found!" });
