@@ -234,4 +234,12 @@ describe('GET /api/', () => {
         })
       })
   });
+  test('404: page not found', () => {
+    return request(app)
+      .get('/apo')
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Not Found!")
+      })
+  });
 });
