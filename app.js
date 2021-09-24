@@ -6,13 +6,15 @@ const {
   getReviews,
   getCommentsByReview,
   postCommentById,
-  getEndpoints
+  getEndpoints,
+  getWelcome
 } = require("./controllers/controllers");
 const app = express();
 const { handle404Err, handle400Err } = require("./errors/errors");
 
 app.use(express.json());
 
+app.get("/", getWelcome)
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewById);
 app.patch("/api/reviews/:review_id", patchReviewVoteById);

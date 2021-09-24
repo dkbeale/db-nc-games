@@ -82,3 +82,7 @@ exports.getEndpoints = (req, res, next) => {
     }
   })
 }
+
+exports.getWelcome = (req, res, next) => {
+  res.status(200).send({ Welcome: "Hello there!"})
+}
