@@ -68,3 +68,17 @@ exports.postCommentById = (req, res, next) => {
       next(err)
     });
 };
+
+exports.getEndpoints = (req, res, next) => {
+  res.status(200).send({
+    "endpoints": {
+      "getCategories": "/api/categories",
+      "getReviewById": "/api/reviews/:review_id",
+      "patchReviewVoteById": "/api/reviews/:review_id",
+      "getReviews": "/api/reviews",
+      "getCommentsByReview": "/api/reviews/:review_id/comments",
+      "postComment": "/api/reviews/:review_id/comments",
+      "getApiEndpoints": "/api"
+    }
+  })
+}
