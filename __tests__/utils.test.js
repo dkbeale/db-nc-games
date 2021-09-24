@@ -275,7 +275,7 @@ describe("#sortReviews", () => {
   });
 });
 
-describe.only("#sortComments", () => {
+describe("#sortComments", () => {
   test("should create 2D array from single object", () => {
     const input = [
       {
