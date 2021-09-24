@@ -84,5 +84,5 @@ exports.getEndpoints = (req, res, next) => {
 }
 
 exports.getWelcome = (req, res, next) => {
-  res.status(200).send({ Welcome: "Hello there!"})
+  res.status(200).send({ Welcome: "Welcome to my API! Enter https://db-nc-games.herokuapp.com/api/ for URL endpoints"})
 }
