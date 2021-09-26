@@ -6,6 +6,7 @@ const {
   fetchCommentsByReview,
   createComment,
 } = require("../models/models");
+const { endpoints } = require('../endpoints')
 
 exports.getCategories = (req, res, next) => {
   fetchCategories()
@@ -70,17 +71,7 @@ exports.postCommentById = (req, res, next) => {
 };
 
 exports.getEndpoints = (req, res, next) => {
-  res.status(200).send({
-    "endpoints": {
-      "getCategories": "/api/categories",
-      "getReviewById": "/api/reviews/:review_id",
-      "patchReviewVoteById": "/api/reviews/:review_id",
-      "getReviews": "/api/reviews",
-      "getCommentsByReview": "/api/reviews/:review_id/comments",
-      "postComment": "/api/reviews/:review_id/comments",
-      "getApiEndpoints": "/api"
-    }
-  })
+  res.status(200).send(endpoints)
 }
 
 exports.getWelcome = (req, res, next) => {
