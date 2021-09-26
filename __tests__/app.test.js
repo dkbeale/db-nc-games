@@ -216,7 +216,7 @@ describe('POST /api/reviews/:review_id/comments', () => {
   });
 });
 
-describe.only('GET /api/', () => {
+describe('GET /api/', () => {
   test('200: responds with a JSON object of the endpoints', () => {
     return request(app)
       .get(`/api`)
