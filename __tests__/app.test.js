@@ -234,3 +234,22 @@ describe('GET /api/', () => {
       })
   });
 });
+
+describe('GET /', () => {
+  test('200: returns welcome message', () => {
+    return request(app)
+      .get('/')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.welcome).toBe("Welcome to my API! Enter https://db-nc-games.herokuapp.com/api/ for URL endpoints")
+      })
+  });
+});
+
+describe.only('DELETE /api/comments/:comment_id', () => {
+  test('204: should delete comment and no content', () => {
+    return request(app)
+    .delete('/api/comments/1')
+    .expect(204)
+  });
+});
