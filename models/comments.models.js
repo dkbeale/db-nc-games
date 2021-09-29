@@ -3,7 +3,7 @@ const { err400TestFunction } = require('../util.functions/model-functions')
 
 
 exports.fetchCommentsByReview = (reviewId) => {
-  if (!parseInt(reviewId)) {
+  if (reviewId % 1 !== 0) {
     return Promise.reject({ status: 400, msg: "Bad Request"})
   }
   return db
@@ -24,4 +24,17 @@ exports.createComment = (userName, reviewId, body) => {
       return comment.rows[0]
     })
   })
+}
+
+exports.removeComment = (commentId) => {
+  console.log(typeof commentId)
+  if(commentId % 1 !== 0) {
+    return Promise.reject({ status: 400, msg: "Bad Request - Not an ID"})
+  }
+  return db
+    .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`, [commentId]).then((comment) => {
+      if(comment.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Comment does not exist"})
+      }
+    })
 }
