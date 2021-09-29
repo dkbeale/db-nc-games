@@ -246,10 +246,26 @@ describe('GET /', () => {
   });
 });
 
-describe.only('DELETE /api/comments/:comment_id', () => {
-  test('204: should delete comment and no content', () => {
+describe('DELETE /api/comments/:comment_id', () => {
+  test('204: should delete comment and returns no content', () => {
     return request(app)
     .delete('/api/comments/1')
     .expect(204)
+  });
+  test('404: non existent ID e.g. 2000', () => {
+    return request(app)
+      .delete('/api/comments/9999')
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe('Comment does not exist')
+      })
+  });
+  test('400: invalid ID e.g. "not-an-id', () => {
+    return request(app)
+      .delete('/api/comments/fish')
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe('Bad Request - Not an ID')
+      })
   });
 });
