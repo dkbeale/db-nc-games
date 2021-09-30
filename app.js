@@ -1,6 +1,6 @@
 const express = require("express");
 const apiRouter = require('./routers/api.router');
-const { handle404Err, handle400Err } = require("./errors/errors");
+const { handle404Err, handle400Err, handle200Err } = require("./errors/errors");
 
 const app = express();
 app.use(express.json());
@@ -15,8 +15,10 @@ app.all("/*", (req, res,) => {
 });
 app.use(handle404Err);
 app.use(handle400Err);
+app.use(handle200Err);
 // app.use((err, req, res, next) => {
 //   console.log(err, "<<<<ERRRRRRROR");
 // });
 
 module.exports = app;
+

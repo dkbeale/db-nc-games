@@ -31,5 +31,8 @@
   },
   "devDependencies": {
     "jest-sorted": "^1.0.12"
+  },
+  "jest": {
+    "setupFilesAfterEnv": ["jest-sorted"]
   }
 }

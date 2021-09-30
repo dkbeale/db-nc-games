@@ -17,6 +17,8 @@ exports.fetchCommentsByReview = (reviewId) => {
 };
 
 exports.createComment = (userName, reviewId, body) => {
+  if(!userName || !reviewId) return Promise.reject({ status: 400, msg: "Missing required field"})
+  if(reviewId % 1 !== 0) return Promise.reject({ status: 400, msg: "Invalid ID"})
   return err400TestFunction(userName, reviewId).then(() => {
     return db
     .query(`INSERT INTO comments (author, review_id, body) VALUES ($1, $2, $3) RETURNING *`, [userName, reviewId, body])
@@ -27,7 +29,6 @@ exports.createComment = (userName, reviewId, body) => {
 }
 
 exports.removeComment = (commentId) => {
-  console.log(typeof commentId)
   if(commentId % 1 !== 0) {
     return Promise.reject({ status: 400, msg: "Bad Request - Not an ID"})
   }

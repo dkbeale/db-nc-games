@@ -30,7 +30,7 @@ const seed = (data) => {
     .then(() => {
       return db.query(
         `CREATE TABLE users (
-          username VARCHAR(50) PRIMARY KEY NOT NULL,
+          username VARCHAR(50) PRIMARY KEY,
           name VARCHAR (50),
           avatar_url VARCHAR(150) NOT NULL
         );`
@@ -60,7 +60,8 @@ const seed = (data) => {
           author VARCHAR(50) NOT NULL
           REFERENCES users(username),
           review_id INTEGER NOT NULL
-          REFERENCES reviews(review_id),
+          REFERENCES reviews(review_id)
+          ON DELETE CASCADE,
           votes INTEGER DEFAULT 0,
           created_at DATE DEFAULT NOW(),
           body VARCHAR(1000) NOT NULL
