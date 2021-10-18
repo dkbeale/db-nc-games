@@ -3,9 +3,9 @@ const apiRouter = require('./routers/api.router');
 const { handle404Err, handle400Err, handle200Err } = require("./errors/errors");
 const cors = require('cors');
 
-app.use(cors());
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res, next) => {
