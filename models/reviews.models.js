@@ -36,64 +36,139 @@ exports.patchReviewVote = (votes, reviewId) => {
     });
 };
 
-exports.fetchAllReviews = (sort = "created_at", order = "desc", category) => {
+exports.fetchAllReviews = (sort = 'created_at', order = 'desc', category) => {
   const sortArray = [
-    "review_id",
-    "title",
-    "designer",
-    "owner",
-    "review_img_url",
-    "review_body",
-    "category",
-    "created_at",
-    "votes",
-    "comment_count",
+    'review_id',
+    'title',
+    'designer',
+    'owner',
+    'review_img_url',
+    'review_body',
+    'category',
+    'created_at',
+    'votes',
+    'comment_count',
   ];
   if (!sortArray.includes(sort)) {
-    return Promise.reject({ status: 400, msg: "Invalid Sort By Query" });
+    return Promise.reject({ status: 400, msg: 'Invalid Sort By Query' });
   }
 
-  if (order !== "desc" && order !== "asc") {
-    return Promise.reject({ status: 400, msg: "Invalid Order Query" });
+  if (order !== 'desc' && order !== 'asc') {
+    return Promise.reject({ status: 400, msg: 'Invalid Order Query' });
   }
 
-  let WHERE = "";
+  let queryParams = [];
   let fixedCategory = '';
 
+  let query = `SELECT reviews.*, COUNT(comment_id) AS comment_count
+  FROM reviews
+  LEFT JOIN comments
+  ON comments.review_id = reviews.review_id `;
+
   if (category) {
-    fixedCategory = category.replace("_", " ").replace("'", "''");
-    WHERE = `WHERE reviews.category = '${fixedCategory}'`;
-    
+    fixedCategory = category.replace('_', ' ');
+    queryParams.push(fixedCategory);
+    query += `WHERE reviews.category = $${queryParams.length}`;
   }
 
-  let query = `SELECT reviews.*, COUNT(comment_id) AS comment_count
-  FROM reviews 
-  LEFT JOIN comments 
-  ON comments.review_id = reviews.review_id
-  ${WHERE}
+  query += `
   GROUP BY reviews.review_id
   ORDER BY ${sort} ${order};`;
 
-  //console.log(query)
+  const promises = [db.query(query, queryParams)];
 
-  const promises = [db.query(query)];
-
-  if(category) {
-    promises.push(db.query(
-      `SELECT * FROM categories
-         WHERE slug = '${fixedCategory}'`
-    ))
+  if (category) {
+    promises.push(
+      db.query(
+        `SELECT * FROM categories
+        WHERE slug = $1`,
+        [fixedCategory]
+      )
+    );
   }
-  
-  return Promise.all(promises).then(([res, cat]) => {
-    
-    if ((!cat || !cat.rows[0]) && category) {
-      return Promise.reject({ status: 404, msg: "Category Does Not Exist" })
-    } 
-    if (category && res.rows.length === 0) {
-      return Promise.reject({ status: 200, msg: "Valid Category - No Reviews"})
-    }
-    return res.rows
-  })
 
+  return Promise.all(promises).then(([res, cat]) => {
+    if ((!cat || !cat.rows[0]) && category) {
+      return Promise.reject({ status: 404, msg: 'Category Does Not Exist' });
+    }
+    if (category && res.rows.length === 0) {
+      return Promise.reject({
+        status: 200,
+        msg: 'Valid Category - No Reviews',
+      });
+    }
+    return res.rows;
+  });
 };
+
+
+// exports.fetchAllReviews = (sort = "created_at", order = "desc", category) => {
+//   const sortArray = [
+//     "review_id",
+//     "title",
+//     "designer",
+//     "owner",
+//     "review_img_url",
+//     "review_body",
+//     "category",
+//     "created_at",
+//     "votes",
+//     "comment_count",
+//   ];
+//   if (!sortArray.includes(sort)) {
+//     return Promise.reject({ status: 400, msg: "Invalid Sort By Query" });
+//   }
+
+//   if (order !== "desc" && order !== "asc") {
+//     return Promise.reject({ status: 400, msg: "Invalid Order Query" });
+//   }
+
+//   let WHERE = "";
+//   let fixedCategory = '';
+
+//   if (category) {
+//     fixedCategory = category.replace("_", " ")
+//     //fixedCategory = "'" + fixedCategory + "'";
+//     console.log(fixedCategory)
+//     WHERE = `WHERE reviews.category = '${fixedCategory}'`;
+    
+//   }
+
+//   let query = `SELECT reviews.*, COUNT(comment_id) AS comment_count
+//   FROM reviews 
+//   LEFT JOIN comments 
+//   ON comments.review_id = reviews.review_id
+//   ${WHERE}
+//   GROUP BY reviews.review_id
+//   ORDER BY ${sort} ${order};`;
+
+//   //console.log(query)
+//   const newStuff = "`" + fixedCategory + "`"
+//   console.log(newStuff)
+
+//   const promises = [db.query(query)];
+
+//   if(category) {
+//     promises.push(db.query(
+//       `SELECT * FROM categories
+//          WHERE slug = $1`, [fixedCategory]
+//     ))
+//   }
+  
+//   return Promise.all(promises).then(([res, cat]) => {
+//     console.log(cat.rows)
+//     if ((!cat || !cat.rows[0]) && category) {
+//       return Promise.reject({ status: 404, msg: "Category Does Not Exist" })
+//     } 
+//     if (category && res.rows.length === 0) {
+//       return Promise.reject({ status: 200, msg: "Valid Category - No Reviews"})
+//     }
+//     return res.rows
+//   })
+
+// };
+
+
+
+
+

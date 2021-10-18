@@ -9,8 +9,8 @@ const { endpoints } = require("../endpoints");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe.only("GET /api/categories ", () => {
-  test.only("200: returns array of category objects", () => {
+describe("GET /api/categories ", () => {
+  test("200: returns array of category objects", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
