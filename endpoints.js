@@ -90,5 +90,10 @@ exports.endpoints = {
           created_at: "2021-01-18T00:00:00.000Z",
           body: "I love this game"
       }
+  },
+  "DELETE /api/comments/:comment_id" : {
+    description: "deletes a comment by comment id",
+    exampleBody: "No body",
+    exampleResponse: "No Response"
   }
 };
