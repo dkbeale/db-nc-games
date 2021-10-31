@@ -95,5 +95,52 @@ exports.endpoints = {
     description: "deletes a comment by comment id",
     exampleBody: "No body",
     exampleResponse: "No Response"
-  }
+  },
+  "GET /api/users" : {
+    description: "gets a basic array of users containing only their username",
+    exampleBody: "No Body",
+    exampleResponse: {
+      users: [
+        { username: "a username" },
+        { username: "another username" },
+        { username: "a third user" }
+      ]
+    }
+  },
+  "GET /api/users/:username" : {
+    description: "gets a single user and their details",
+    exampleBody: "No Body",
+    exampleResponse: {
+      username: "username",
+      name: "users actual name",
+      avatar_url: "url for the users avatar"
+    }
+  },
+  "POST /api/users" : {
+    description: "add a new user to the user list",
+    exampleBody: {
+      username: "a username",
+      name: "users actual name",
+      avatar_url: "url for the users chosen avatar"
+    },
+    exampleResponse: {
+      username: "a username",
+      name: "users actual name",
+      avatar_url: "url for the users chosen avatar"
+    }
+  },
+  "PATCH /api/comments/:comment_id" : {
+    description: "increase/decrease comment votes, only plus or minus, returns comment with changed vote",
+    exampleBody: {
+      inc_vote: -1
+    },
+    exampleResponse: {
+      comment_id: 7,
+          author: "philippaclaire9",
+          review_id: 5,
+          votes: 5,
+          created_at: "2021-01-18T00:00:00.000Z",
+          body: "I love this game"
+    }
+  } 
 };
