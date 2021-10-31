@@ -422,7 +422,6 @@ describe("GET /api/users", () => {
       .get("/api/users")
       .expect(200)
       .then(({ body: { users } }) => {
-        console.log(users);
         expect(users).toHaveLength(4);
         expect(users[0]).toMatchObject({
           username: expect.any(String),
@@ -439,7 +438,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe.only("GET /api/users/:username", () => {
+describe("GET /api/users/:username", () => {
   test("200: returns single user by username", () => {
     return request(app)
       .get("/api/users/philippaclaire9")
@@ -452,12 +451,52 @@ describe.only("GET /api/users/:username", () => {
         );
       });
   });
-  test('404: user does not exist', () => {
+  test("404: user does not exist", () => {
     return request(app)
-    .get('/api/users/dannyboy')
-    .expect(404)
-    .then((res) => {
-      expect(res.body.msg).toBe("User Not Found!")
-    })
+      .get("/api/users/dannyboy")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("User Not Found!");
+      });
+  });
+});
+
+describe("POST /api/users", () => {
+  test("201: new user created, responds with new user", () => {
+    return request(app)
+      .post("/api/users")
+      .send({
+        username: "Coraljester",
+        name: "Dan",
+        avatar_url: "www.somewebsite.co.uk",
+      })
+      .expect(201)
+      .then(({ body: { user } }) => {
+        expect(user.username).toBe("Coraljester");
+        expect(user.name).toBe("Dan");
+        expect(user.avatar_url).toBe("www.somewebsite.co.uk");
+      });
+  });
+  test("400: missing required fields", () => {
+    return request(app)
+      .post("/api/users")
+      .send({ username: "Coraljester", avatar_url: "www.website.com" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Missing Required Field");
+      });
+  });
+  test("400: invalid URL", () => {
+    return request(app)
+      .post("/api/users")
+      .send({
+        username: "Coraljester",
+        name: "Dan",
+        avatar_url: "somewebsite.co.uk",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid URL");
+      });
   });
 });
