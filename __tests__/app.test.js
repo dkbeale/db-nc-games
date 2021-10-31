@@ -5,6 +5,7 @@ const request = require("supertest");
 const app = require("../app");
 const { get } = require("superagent");
 const { endpoints } = require("../endpoints");
+const { query } = require("express");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -210,41 +211,41 @@ describe("GET /api/reviews", () => {
           category: "social deduction",
           created_at: "2021-01-25T00:00:00.000Z",
           votes: 9,
-          comment_count: "0"
+          comment_count: "0",
         });
       });
   });
-  test('400: invalid sort_by query', () => {
+  test("400: invalid sort_by query", () => {
     return request(app)
-      .get('/api/reviews?sort_by=fish')
+      .get("/api/reviews?sort_by=fish")
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe("Invalid Sort By Query")
-      })
+        expect(res.body.msg).toBe("Invalid Sort By Query");
+      });
   });
-  test('400: invalid order query', () => {
+  test("400: invalid order query", () => {
     return request(app)
-      .get('/api/reviews?order=fish')
+      .get("/api/reviews?order=fish")
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe("Invalid Order Query")
-      })
+        expect(res.body.msg).toBe("Invalid Order Query");
+      });
   });
-  test('404: invalid category', () => {
+  test("404: invalid category", () => {
     return request(app)
-      .get('/api/reviews?category=fish')
+      .get("/api/reviews?category=fish")
       .expect(404)
       .then((res) => {
-        expect(res.body.msg).toBe("Category Does Not Exist")
-      })
+        expect(res.body.msg).toBe("Category Does Not Exist");
+      });
   });
-  test('200: valid category, no results', () => {
+  test("200: valid category, no results", () => {
     return request(app)
       .get("/api/reviews?category=children's_games")
       .expect(200)
       .then((res) => {
-        expect(res.body.msg).toBe("Valid Category - No Reviews")
-      })
+        expect(res.body.msg).toBe("Valid Category - No Reviews");
+      });
   });
 });
 
@@ -412,5 +413,51 @@ describe("DELETE /api/comments/:comment_id", () => {
       .then((res) => {
         expect(res.body.msg).toBe("Bad Request - Not an ID");
       });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: returns array of users with only username property", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        console.log(users);
+        expect(users).toHaveLength(4);
+        expect(users[0]).toMatchObject({
+          username: expect.any(String),
+        });
+      });
+  });
+  test("404: not found, incorrectly spelt endpoint", () => {
+    return request(app)
+      .get("/api/userrs")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Not Found!");
+      });
+  });
+});
+
+describe.only("GET /api/users/:username", () => {
+  test("200: returns single user by username", () => {
+    return request(app)
+      .get("/api/users/philippaclaire9")
+      .expect(200)
+      .then(({ body: { user } }) => {
+        expect(user.username).toBe("philippaclaire9");
+        expect(user.name).toBe("philippa");
+        expect(user.avatar_url).toBe(
+          "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        );
+      });
+  });
+  test('404: user does not exist', () => {
+    return request(app)
+    .get('/api/users/dannyboy')
+    .expect(404)
+    .then((res) => {
+      expect(res.body.msg).toBe("User Not Found!")
+    })
   });
 });
