@@ -500,3 +500,53 @@ describe("POST /api/users", () => {
       });
   });
 });
+
+describe.only('PATCH /api/comments/:comment_id', () => {
+  test('201: should increase comment vote by 1 and return updated comment', () => {
+    return request(app)
+    .patch(`/api/comments/1`)
+    .send({ inc_votes: 1})
+    .expect(201)
+    .then(({ body: { comment } }) => {
+      expect(comment.votes).toBe(17)
+      expect(comment.body).toBe("I loved this game too!")
+    })
+  });
+  test('201: should decrease comment vote by 1 and return updated comment', () => {
+    return request(app)
+    .patch(`/api/comments/1`)
+    .send({ inc_votes: -1})
+    .expect(201)
+    .then(({ body: { comment } }) => {
+      expect(comment.votes).toBe(15)
+      expect(comment.body).toBe("I loved this game too!")
+    })
+  });
+  test('404: comment does not exist', () => {
+    return request(app)
+    .patch(`/api/comments/18`)
+    .send({ inc_votes: 1 })
+    .expect(404)
+    .then((res) => {
+      expect(res.body.msg).toBe("Comment Does Not Exist")
+    })
+  });
+  test('400: vote is not an integer', () => {
+    return request(app)
+    .patch(`/api/comments/1`)
+    .send({ inc_votes: 1.5 })
+    .expect(400)
+    .then((res) => {
+      expect(res.body.msg).toBe("Bad Request: Vote not an integer")
+    })
+  });
+  test('400: comment_id is not a whole number', () => {
+    return request(app)
+    .patch(`/api/comments/1.5`)
+    .send({ inc_votes: 1 })
+    .expect(400)
+    .then((res) => {
+      expect(res.body.msg).toBe("Bad Request: Comment ID not an integer")
+    })
+  });
+});
