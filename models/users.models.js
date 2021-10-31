@@ -34,6 +34,5 @@ exports.createUser = (userName, name, avatarUrl) => {
     )
     .then((user) => {
       return user.rows[0];
-      console.log(user.rows[0]);
     });
 };

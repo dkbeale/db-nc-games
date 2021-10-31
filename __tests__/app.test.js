@@ -501,7 +501,7 @@ describe("POST /api/users", () => {
   });
 });
 
-describe.only('PATCH /api/comments/:comment_id', () => {
+describe('PATCH /api/comments/:comment_id', () => {
   test('201: should increase comment vote by 1 and return updated comment', () => {
     return request(app)
     .patch(`/api/comments/1`)
