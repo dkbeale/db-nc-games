@@ -501,92 +501,144 @@ describe("POST /api/users", () => {
   });
 });
 
-describe('PATCH /api/comments/:comment_id', () => {
-  test('201: should increase comment vote by 1 and return updated comment', () => {
+describe("PATCH /api/comments/:comment_id", () => {
+  test("201: should increase comment vote by 1 and return updated comment", () => {
     return request(app)
-    .patch(`/api/comments/1`)
-    .send({ inc_votes: 1})
-    .expect(201)
-    .then(({ body: { comment } }) => {
-      expect(comment.votes).toBe(17)
-      expect(comment.body).toBe("I loved this game too!")
-    })
+      .patch(`/api/comments/1`)
+      .send({ inc_votes: 1 })
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment.votes).toBe(17);
+        expect(comment.body).toBe("I loved this game too!");
+      });
   });
-  test('201: should decrease comment vote by 1 and return updated comment', () => {
+  test("201: should decrease comment vote by 1 and return updated comment", () => {
     return request(app)
-    .patch(`/api/comments/1`)
-    .send({ inc_votes: -1})
-    .expect(201)
-    .then(({ body: { comment } }) => {
-      expect(comment.votes).toBe(15)
-      expect(comment.body).toBe("I loved this game too!")
-    })
+      .patch(`/api/comments/1`)
+      .send({ inc_votes: -1 })
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment.votes).toBe(15);
+        expect(comment.body).toBe("I loved this game too!");
+      });
   });
-  test('404: comment does not exist', () => {
+  test("404: comment does not exist", () => {
     return request(app)
-    .patch(`/api/comments/18`)
-    .send({ inc_votes: 1 })
-    .expect(404)
-    .then((res) => {
-      expect(res.body.msg).toBe("Comment Does Not Exist")
-    })
+      .patch(`/api/comments/18`)
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Comment Does Not Exist");
+      });
   });
-  test('400: vote is not an integer', () => {
+  test("400: vote is not an integer", () => {
     return request(app)
-    .patch(`/api/comments/1`)
-    .send({ inc_votes: 1.5 })
-    .expect(400)
-    .then((res) => {
-      expect(res.body.msg).toBe("Bad Request: Vote not an integer")
-    })
+      .patch(`/api/comments/1`)
+      .send({ inc_votes: 1.5 })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Vote not an integer");
+      });
   });
-  test('400: comment_id is not an integer', () => {
+  test("400: comment_id is not an integer", () => {
     return request(app)
-    .patch(`/api/comments/1.5`)
-    .send({ inc_votes: 1 })
-    .expect(400)
-    .then((res) => {
-      expect(res.body.msg).toBe("Bad Request: Comment ID not an integer")
-    })
+      .patch(`/api/comments/1.5`)
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Comment ID not an integer");
+      });
   });
 });
 
-describe.only('POST /api/categories', () => {
-  test('201: posts new category and returns category object', () => {
+describe("POST /api/categories", () => {
+  test("201: posts new category and returns category object", () => {
     return request(app)
-    .post('/api/categories')
-    .send({ slug: "fishing", description: "catching fish"})
-    .expect(201)
-    .then(({ body: { category } }) => {
-      expect(category.slug).toBe("fishing");
-      expect(category.description).toBe("catching fish");
-    })
+      .post("/api/categories")
+      .send({ slug: "fishing", description: "catching fish" })
+      .expect(201)
+      .then(({ body: { category } }) => {
+        expect(category.slug).toBe("fishing");
+        expect(category.description).toBe("catching fish");
+      });
   });
-  test('400: returns error when category already exists', () => {
+  test("400: returns error when category already exists", () => {
     return request(app)
-    .post('/api/categories')
-    .send({ slug: "dexterity", description: "Games involving physical skill"})
-    .expect(400)
-    .then((res) => {
-      expect(res.body.msg).toBe("Bad Request: Category already exists")
-    })
+      .post("/api/categories")
+      .send({
+        slug: "dexterity",
+        description: "Games involving physical skill",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Category already exists");
+      });
   });
-  test('400: missing required fields', () => {
+  test("400: missing required fields", () => {
     return request(app)
-    .post('/api/categories')
-    .send({ description: "Games involving physical skill" })
-    .expect(400)
-    .then((res) => {
-      expect(res.body.msg).toBe("Bad Request: Missing required field")
-    })
+      .post("/api/categories")
+      .send({ description: "Games involving physical skill" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Missing required field");
+      });
   });
   test("400: slug is not a string", () => {
     return request(app)
-    .post('/api/categories')
-    .send({ slug: 10, description: "Games involving physical skill"})
-    .expect(400)
-    .then((res) => {
-      expect(res.body.msg).toBe("Bad Request: Slug cannot be a number")
-    })
+      .post("/api/categories")
+      .send({ slug: 10, description: "Games involving physical skill" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Slug cannot be a number");
+      });
+  });
+});
+
+describe.only("POST /api/reviews", () => {
+  test("201: posts new review, returns review", () => {
+    return request(app)
+      .post(`/api/reviews`)
+      .send({
+        title: "test review",
+        designer: "test designer",
+        owner: "philippaclaire9",
+        review_body: "test review body",
+        category: "dexterity",
+      })
+      .expect(201)
+      .then(({ body: { review } }) => {
+        expect(review.title).toBe("test review")
+        expect(review.designer).toBe("test designer")
+        expect(review.review_id).toBe(14)
+      })
+  });
+  test('400: missing request body category', () => {
+    return request(app)
+      .post(`/api/reviews`)
+      .send({
+        title: "test review",
+        designer: "test designer",
+        review_body: "test review body",
+        category: "dexterity",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Missing Property")
+      })
+  });
+  test('404: owner does exist', () => {
+    return request(app)
+      .post(`/api/reviews`)
+      .send({
+        title: "test review",
+        designer: "test designer",
+        owner: "dannyboy",
+        review_body: "test review body",
+        category: "dexterity",
+      })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Owner: User does not exist")
+      })
   });
 });
