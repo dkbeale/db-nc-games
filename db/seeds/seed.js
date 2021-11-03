@@ -41,14 +41,14 @@ const seed = (data) => {
         `CREATE TABLE reviews (
           review_id SERIAL PRIMARY KEY,
           title VARCHAR(100) NOT NULL,
-          review_body VARCHAR(1000),
-          designer VARCHAR(50),
+          review_body VARCHAR(1000) NOT NULL,
+          designer VARCHAR(50) NOT NULL,
           review_img_url VARCHAR(200) DEFAULT 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
           votes INTEGER DEFAULT 0,
           category VARCHAR(100)
-          REFERENCES categories(slug),
+          REFERENCES categories(slug) NOT NULL,
           owner VARCHAR(50)
-          REFERENCES users(username),
+          REFERENCES users(username)NOT NULL,
           created_at DATE DEFAULT NOW()
         );`
       );
