@@ -2,6 +2,7 @@ const {
   fetchReview,
   patchReviewVote,
   fetchAllReviews,
+  createReview,
 } = require("../models/reviews.models");
 
 exports.getReviewById = (req, res, next) => {
@@ -29,10 +30,27 @@ exports.patchReviewVoteById = (req, res, next) => {
 
 exports.getReviews = (req, res, next) => {
   const { sort_by: sort, order: order, category: category } = req.query;
-  fetchAllReviews(sort, order, category).then((reviews) => {
-    
-    res.status(200).send({ reviews: reviews });
+  fetchAllReviews(sort, order, category)
+    .then((reviews) => {
+      res.status(200).send({ reviews: reviews });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.postReview = (req, res, next) => {
+  const {
+    title: title,
+    designer: designer,
+    owner: owner,
+    review_body: body,
+    category: category,
+  } = req.body;
+  createReview(title, body, designer, category, owner)
+  .then((review) => {
+    res.status(201).send(({ review: review }))
   }).catch((err) => {
-    next(err)
+    next(err);
   });
 };
