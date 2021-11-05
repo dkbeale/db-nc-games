@@ -551,7 +551,7 @@ describe('PATCH /api/comments/:comment_id', () => {
   });
 });
 
-describe.only('POST /api/categories', () => {
+describe('POST /api/categories', () => {
   test('201: posts new category and returns category object', () => {
     return request(app)
     .post('/api/categories')
@@ -588,5 +588,140 @@ describe.only('POST /api/categories', () => {
     .then((res) => {
       expect(res.body.msg).toBe("Bad Request: Slug cannot be a number")
     })
+  });
+});
+
+describe("POST /api/categories", () => {
+  test("201: posts new category and returns category object", () => {
+    return request(app)
+      .post("/api/categories")
+      .send({ slug: "fishing", description: "catching fish" })
+      .expect(201)
+      .then(({ body: { category } }) => {
+        expect(category.slug).toBe("fishing");
+        expect(category.description).toBe("catching fish");
+      });
+  });
+  test("400: returns error when category already exists", () => {
+    return request(app)
+      .post("/api/categories")
+      .send({
+        slug: "dexterity",
+        description: "Games involving physical skill",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Category already exists");
+      });
+  });
+  test("400: missing required fields", () => {
+    return request(app)
+      .post("/api/categories")
+      .send({ description: "Games involving physical skill" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Missing required field");
+      });
+  });
+  test("400: slug is not a string", () => {
+    return request(app)
+      .post("/api/categories")
+      .send({ slug: 10, description: "Games involving physical skill" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Slug cannot be a number");
+      });
+  });
+});
+
+describe("POST /api/reviews", () => {
+  test("201: posts new review, returns review", () => {
+    return request(app)
+      .post(`/api/reviews`)
+      .send({
+        title: "test review",
+        designer: "test designer",
+        owner: "philippaclaire9",
+        review_body: "test review body",
+        category: "dexterity",
+      })
+      .expect(201)
+      .then(({ body: { review } }) => {
+        expect(review.title).toBe("test review")
+        expect(review.designer).toBe("test designer")
+        expect(review.review_id).toBe(14)
+      })
+  });
+  test('400: missing request body category', () => {
+    return request(app)
+      .post(`/api/reviews`)
+      .send({
+        title: "test review",
+        designer: "test designer",
+        review_body: "test review body",
+        category: "dexterity",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request: Missing Property")
+      })
+  });
+  test('404: owner does not exist', () => {
+    return request(app)
+      .post(`/api/reviews`)
+      .send({
+        title: "test review",
+        designer: "test designer",
+        owner: "dannyboy",
+        review_body: "test review body",
+        category: "dexterity",
+      })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Owner: User does not exist")
+      })
+  });
+  test("404: category doesn't exist", () => {
+    return request(app)
+      .post(`/api/reviews`)
+      .send({
+        title: "test review",
+        designer: "test designer",
+        owner: "philippaclaire9",
+        review_body: "test review body",
+        category: "mission-stuff",
+      })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Category: Category does not exist")
+      })
+  });
+});
+
+describe('GET /api/users/:username/reviews', () => {
+  test('200: Serves up all the reviews written by user', () => {
+    return request(app)
+    .get("/api/users/mallionaire/reviews")
+    .expect(200)
+    .then(({ body: { reviews } }) => {
+      expect(reviews).toHaveLength(11)
+      expect(reviews[0].title).toBe("Agricola")
+    })
+  });
+  test("404: username doesn't exist", () => {
+    return request(app)
+    .get("/api/users/danny/reviews")
+    .expect(404)
+    .then((res) => {
+      expect(res.body.msg).toBe("404: User does not exist")
+    })
+  });
+  test('404: No reviews by user', () => {
+    return request(app)
+    .get("/api/users/dav3rid/reviews")
+    .expect(404)
+    .then((res) => {
+      expect(res.body.msg).toBe("404: User has no reviews")
+    });
   });
 });
