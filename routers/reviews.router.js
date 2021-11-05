@@ -9,7 +9,11 @@ reviewsRouter
         .get(getReviews)
         .post(postReview);
 
-reviewsRouter.route('/:review_id/comments').get(getCommentsByReview).post(postCommentById)
+reviewsRouter
+        .route('/:review_id/comments')
+        .get(getCommentsByReview)
+        .post(postCommentById);
+
 reviewsRouter
         .route('/:review_id')
         .get(getReviewById)

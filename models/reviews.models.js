@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const { createReviewTesting } = require("../util.functions/model-functions");
+const { createReviewTesting, getReviewsByUserTesting } = require('../util.functions/model-functions')
 
 exports.fetchReview = (reviewId) => {
   if (reviewId % 1 !== 0) {
@@ -115,3 +115,18 @@ exports.createReview = (title, body, designer, category, owner) => {
     }
   );
 };
+
+exports.fetchReviewsByUser = (username) => {
+  return getReviewsByUserTesting(username).then(() => {
+    return db
+      .query(`SELECT * FROM reviews WHERE owner = $1`, [username])
+      .then((reviews) => {
+        if(reviews.rows.length === 0) {
+          return Promise.reject({ status: 404, msg: "404: User has no reviews"})
+        }
+        return reviews.rows;
+      });
+  });
+};
+
+

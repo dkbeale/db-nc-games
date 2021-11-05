@@ -3,6 +3,7 @@ const {
   patchReviewVote,
   fetchAllReviews,
   createReview,
+  fetchReviewsByUser
 } = require("../models/reviews.models");
 
 exports.getReviewById = (req, res, next) => {
@@ -54,3 +55,28 @@ exports.postReview = (req, res, next) => {
     next(err);
   });
 };
+
+exports.postReview = (req, res, next) => {
+  const {
+    title: title,
+    designer: designer,
+    owner: owner,
+    review_body: body,
+    category: category,
+  } = req.body;
+  createReview(title, body, designer, category, owner)
+  .then((review) => {
+    res.status(201).send(({ review: review }))
+  }).catch((err) => {
+    next(err);
+  });
+};
+
+exports.getReviewsByUser = (req, res, next) => {
+  const { username: username } = req.params
+  fetchReviewsByUser(username).then((reviews) => {
+    res.status(200).send({ reviews: reviews })
+  }).catch((err) => {
+    next(err);
+  })
+}
