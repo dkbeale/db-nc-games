@@ -37,7 +37,15 @@ exports.patchReviewVote = (votes, reviewId, body) => {
     });
 };
 
-exports.fetchAllReviews = (sort = "created_at", order = "desc", category) => {
+exports.fetchAllReviews = (sort = "created_at", order = "desc", category, search) => {
+  // const queryTest = `SELECT * FROM reviews WHERE title ILIKE '%${search}%'`
+  // console.log(queryTest)
+  // return db.query(
+  //   `SELECT * FROM reviews WHERE title ILIKE %$1%`
+  // ).then((res) => {
+  //   console.log(res)
+  // })
+  
   const sortArray = [
     "review_id",
     "title",
@@ -66,16 +74,28 @@ exports.fetchAllReviews = (sort = "created_at", order = "desc", category) => {
   LEFT JOIN comments
   ON comments.review_id = reviews.review_id `;
 
+  if (search) {
+    queryParams.push(`%${search}%`);
+    query += `WHERE reviews.title ILIKE $1`
+  }
+
   if (category) {
     fixedCategory = category.replace("_", " ");
     queryParams.push(fixedCategory);
-    query += `WHERE reviews.category = $${queryParams.length}`;
+    if (search) {
+      query += `AND reviews.category = $${queryParams.length}`;
+
+    } else {
+      query += `WHERE reviews.category = $${queryParams.length}`;
+    }
   }
+
+
 
   query += `
   GROUP BY reviews.review_id
   ORDER BY ${sort} ${order};`;
-
+  
   const promises = [db.query(query, queryParams)];
 
   if (category) {

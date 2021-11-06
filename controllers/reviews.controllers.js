@@ -33,8 +33,8 @@ exports.patchReviewVoteById = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-  const { sort_by: sort, order: order, category: category } = req.query;
-  fetchAllReviews(sort, order, category)
+  const { sort_by: sort, order: order, category: category, search: search } = req.query;
+  fetchAllReviews(sort, order, category, search)
     .then((reviews) => {
       res.status(200).send({ reviews: reviews });
     })
