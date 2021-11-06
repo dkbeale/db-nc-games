@@ -1,21 +1,18 @@
 const db = require("../db/connection");
-const { err400TestFunction } = require("../util.functions/model-functions");
+const { err400TestFunction, getCommentsByReviewTesting } = require("../util.functions/model-functions");
 
 exports.fetchCommentsByReview = (reviewId) => {
   if (reviewId % 1 !== 0) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   }
-  return db
-    .query(`SELECT * FROM comments WHERE review_id = $1`, [reviewId])
-    .then((comments) => {
-      if (comments.rows.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "Review Not Found Or No Comments!",
-        });
-      }
-      return comments.rows;
-    });
+  return getCommentsByReviewTesting(reviewId).then(() => {
+    return db
+      .query(`SELECT * FROM comments WHERE review_id = $1`, [reviewId])
+      .then((comments) => {
+        return comments.rows;
+      });
+
+  })
 };
 
 exports.createComment = (userName, reviewId, body) => {
@@ -65,6 +62,5 @@ exports.updateCommentVote = (newVote, commentId) => {
       return Promise.reject({ status: 404, msg: "Comment Does Not Exist"})
     }
     return comment.rows[0]
-    console.log(comment.rows)
   });
 };

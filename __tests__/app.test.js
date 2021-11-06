@@ -244,7 +244,7 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews?category=children's_games")
       .expect(200)
       .then((res) => {
-        expect(res.body.msg).toBe("Valid Category - No Reviews");
+        expect(res.body.reviews).toEqual([]);
       });
   });
   test('200: gets reviews by title search', () => {
@@ -256,12 +256,12 @@ describe("GET /api/reviews", () => {
       expect(reviews[0].title).toBe("Ultimate Werewolf")
     })
   });
-  test('404: No search results', () => {
+  test('200: No search results', () => {
     return request(app)
     .get('/api/reviews?search=fish')
-    .expect(404)
+    .expect(200)
     .then((res) => {
-      expect(res.body.msg).toBe("404: No reviews match search")
+      expect(res.body.reviews).toEqual([])
     })
   });
   test('200 including search and category', () => {
@@ -272,6 +272,14 @@ describe("GET /api/reviews", () => {
       expect(reviews).toHaveLength(2)
       expect(reviews[0].title).toBe("Ultimate Werewolf")
       expect(reviews[1].title).toBe("One Night Ultimate Werewolf")
+    })
+  });
+  test('200: no results with search and category', () => {
+    return request(app)
+    .get('/api/reviews?search=wolf&category=euro_game')
+    .expect(200)
+    .then((res) => {
+      expect(res.body.reviews).toEqual([]);
     })
   });
 });
@@ -301,7 +309,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/118/comments")
       .expect(404)
       .then((res) => {
-        expect(res.body.msg).toBe("Review Not Found Or No Comments!");
+        expect(res.body.msg).toBe("404: Review Not Found");
       });
   });
   test("400: if review param is not a number", () => {
@@ -311,6 +319,14 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .then((res) => {
         expect(res.body.msg).toBe("Bad Request");
       });
+  });
+  test('200: review exists, but no comments', () => {
+    return request(app)
+    .get('/api/reviews/14/comments')
+    .expect(200)
+    .then((res) => {
+      expect(res.body.comments).toEqual([]);
+    })
   });
 });
 
@@ -706,9 +722,9 @@ describe('GET /api/users/:username/reviews', () => {
   test('404: No reviews by user', () => {
     return request(app)
     .get("/api/users/dav3rid/reviews")
-    .expect(404)
+    .expect(200)
     .then((res) => {
-      expect(res.body.msg).toBe("404: User has no reviews")
+      expect(res.body.reviews).toEqual([]);
     });
   });
 });

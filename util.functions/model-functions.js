@@ -45,3 +45,13 @@ exports.getReviewsByUserTesting = (username) => {
     }
   })
 }
+
+exports.getCommentsByReviewTesting = (reviewId) => {
+  return db.query(
+    `SELECT * FROM reviews WHERE review_id = $1`, [reviewId]
+  ).then((res) => {
+    if (res.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "404: Review Not Found"})
+    }
+  })
+}

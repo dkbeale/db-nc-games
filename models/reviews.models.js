@@ -38,13 +38,6 @@ exports.patchReviewVote = (votes, reviewId, body) => {
 };
 
 exports.fetchAllReviews = (sort = "created_at", order = "desc", category, search) => {
-  // const queryTest = `SELECT * FROM reviews WHERE title ILIKE '%${search}%'`
-  // console.log(queryTest)
-  // return db.query(
-  //   `SELECT * FROM reviews WHERE title ILIKE %$1%`
-  // ).then((res) => {
-  //   console.log(res)
-  // })
   
   const sortArray = [
     "review_id",
@@ -113,15 +106,7 @@ exports.fetchAllReviews = (sort = "created_at", order = "desc", category, search
     if ((!cat || !cat.rows[0]) && category) {
       return Promise.reject({ status: 404, msg: "Category Does Not Exist" });
     }
-    if (search && res.rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "404: No reviews match search"})
-    }
-    if (category && res.rows.length === 0) {
-      return Promise.reject({
-        status: 200,
-        msg: "Valid Category - No Reviews",
-      });
-    }
+   
     return res.rows;
   });
 };
@@ -146,9 +131,6 @@ exports.fetchReviewsByUser = (username) => {
     return db
       .query(`SELECT * FROM reviews WHERE owner = $1`, [username])
       .then((reviews) => {
-        if(reviews.rows.length === 0) {
-          return Promise.reject({ status: 404, msg: "404: User has no reviews"})
-        }
         return reviews.rows;
       });
   });
