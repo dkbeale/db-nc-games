@@ -19,7 +19,8 @@ exports.fetchReview = (reviewId) => {
     });
 };
 
-exports.patchReviewVote = (votes, reviewId) => {
+exports.patchReviewVote = (votes, reviewId, body) => {
+  
   if (votes % 1 !== 0 || reviewId % 1 !== 0) {
     return Promise.reject({ status: 400, msg: "Invalid ID or Vote" });
   }
@@ -129,4 +130,33 @@ exports.fetchReviewsByUser = (username) => {
   });
 };
 
+exports.removeReview = (reviewId) => {
+  if (reviewId % 1 !== 0) {
+    return Promise.reject({ status: 400, msg: "Bad Request: Not an ID"})
+  }
+  return db.query(
+    `DELETE FROM reviews WHERE review_id = $1 RETURNING *`, [reviewId]
+  )
+  .then((reviews) => {
+    if (reviews.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "404: Review does not exist"});
+    }
+  });
+}
 
+exports.editReviewBody = (body, reviewId) => {
+  if(!body) {
+    return Promise.reject({ status: 400, msg: "400: Missing required field"})
+  }
+  if (reviewId % 1 !== 0) {
+    return Promise.reject({ status: 400, msg: "400: Not an ID"})
+  }
+  return db.query(
+    `UPDATE reviews SET review_body = $1 WHERE review_id = $2 RETURNING *`, [body, reviewId]
+  ).then((review) => {
+    if (review.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "404: Review not found" })
+    }
+    return review.rows[0];
+  })
+}

@@ -247,6 +247,7 @@ describe("GET /api/reviews", () => {
         expect(res.body.msg).toBe("Valid Category - No Reviews");
       });
   });
+  
 });
 
 describe("GET /api/reviews/:review_id/comments", () => {
@@ -774,5 +775,76 @@ describe('GET /api/users/:username/reviews', () => {
     });
   });
 });
+
+describe('DELETE /api/reviews/:review_id', () => {
+  test('204: should delete review by id, returning nothing', () => {
+    return request(app)
+    .delete('/api/reviews/3')
+    .expect(204)
+    .then(() => {
+      return db.query(
+        `SELECT * FROM reviews`
+      ).then((reviews) =>{
+        expect(reviews.rows).toHaveLength(12)
+      })
+    })
+  });
+  test('404: review does not exist', () => {
+    return request(app)
+    .delete('/api/reviews/1000')
+    .expect(404)
+    .then((res) => {
+      expect(res.body.msg).toBe("404: Review does not exist")
+    })
+  });
+  test('400: review id not an integer', () => {
+    return request(app)
+    .delete('/api/reviews/1.5')
+    .expect(400)
+    .then((res) => {
+      expect(res.body.msg).toBe("Bad Request: Not an ID")
+    })
+  });
+});
+
+describe('PATCH /api/reviews/:review_id/body', () => {
+  test('201: edit review body', () => {
+    return request(app)
+    .patch('/api/reviews/3/body')
+    .send({ review_body: "This game is wolfishly good" })
+    .expect(201)
+    .then(({ body: { review } }) => {
+      expect(review.title).toBe("Ultimate Werewolf")
+      expect(review.review_body).toBe("This game is wolfishly good")
+    })
+  });
+  test('400: missing required field', () => {
+    return request(app)
+    .patch('/api/reviews/3/body')
+    .expect(400)
+    .then((res) => {
+      expect(res.body.msg).toBe("400: Missing required field")
+    })
+  });
+  test('404: review does not exist', () => {
+    return request(app)
+    .patch('/api/reviews/1000/body')
+    .send({ review_body: "This game is wolfishly good" })
+    .expect(404)
+    .then((res) => {
+      expect(res.body.msg).toBe("404: Review not found")
+    })
+  });
+  test('400: review_id not an integer', () => {
+    return request(app)
+    .patch('/api/reviews/1.5/body')
+    .send({ review_body: "This game is wolfishly good" })
+    .expect(400)
+    .then((res) => {
+      expect(res.body.msg).toBe("400: Not an ID")
+    })
+  });
+});
+
 
 

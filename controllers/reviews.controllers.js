@@ -4,7 +4,9 @@ const {
   fetchAllReviews,
   createReview,
   fetchReviewsByUser,
-  fetchReviewsBySearch
+  fetchReviewsBySearch,
+  removeReview,
+  editReviewBody
 } = require("../models/reviews.models");
 
 exports.getReviewById = (req, res, next) => {
@@ -82,3 +84,21 @@ exports.getReviewsByUser = (req, res, next) => {
   })
 }
 
+exports.deleteReviews = (req, res, next) => {
+  const { review_id: reviewId } = req.params
+  removeReview(reviewId).then(() => {
+    res.status(204).send({})
+  }).catch((err) => {
+    next(err)
+  })
+}
+
+exports.patchReviewBody = (req, res, next) => {
+  const { review_id: reviewId } = req.params
+  const { review_body: body } = req.body
+  editReviewBody(body, reviewId).then((review) => {
+    res.status(201).send({ review: review })
+  }).catch((err) => {
+    next(err)
+  })
+}
