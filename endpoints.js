@@ -16,7 +16,7 @@ exports.endpoints = {
     },
   },
   "GET /api/reviews": {
-    description: "serves an array of all reviews",
+    description: "serves an array of all reviews, if queries are correct but no reviews, serves empty array",
     queries: ["category", "sort_by", "order", "search"],
     exampleResponse: {
       reviews: [
@@ -66,7 +66,7 @@ exports.endpoints = {
     },
   },
   "GET /api/reviews/:review_id/comments": {
-    description: "serves all the comments attached to a chosen review_id",
+    description: "serves all the comments attached to a chosen review_id, if review exists but there are no comments, serves empty array",
     exampleResponse: {
       comment_id: 2,
       body: "I loved this game too!",
@@ -177,7 +177,7 @@ exports.endpoints = {
     }
   },
   "GET /api/users/:username/reviews" : {
-    description: "gets all reviews written by a single user",
+    description: "gets all reviews written by a single user, if user exists but no reviews, serves empty array",
     exampleBody: "no body",
     exampleResponse: [
       {
