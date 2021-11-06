@@ -95,6 +95,7 @@ exports.fetchAllReviews = (sort = "created_at", order = "desc", category, search
   query += `
   GROUP BY reviews.review_id
   ORDER BY ${sort} ${order};`;
+
   
   const promises = [db.query(query, queryParams)];
 
@@ -111,6 +112,9 @@ exports.fetchAllReviews = (sort = "created_at", order = "desc", category, search
   return Promise.all(promises).then(([res, cat]) => {
     if ((!cat || !cat.rows[0]) && category) {
       return Promise.reject({ status: 404, msg: "Category Does Not Exist" });
+    }
+    if (search && res.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "404: No reviews match search"})
     }
     if (category && res.rows.length === 0) {
       return Promise.reject({

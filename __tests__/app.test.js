@@ -144,7 +144,7 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.reviews).toEqual(expect.any(Array));
-        expect(res.body.reviews).toHaveLength(13);
+        expect(res.body.reviews).toHaveLength(14);
         expect(typeof res.body.reviews[0]).toEqual("object");
         expect(res.body.reviews[6]).toMatchObject({
           owner: expect.any(String),
@@ -252,8 +252,26 @@ describe("GET /api/reviews", () => {
     .get('/api/reviews?search=wolf')
     .expect(200)
     .then(({ body: { reviews } }) => {
+      expect(reviews).toHaveLength(3)
+      expect(reviews[0].title).toBe("Ultimate Werewolf")
+    })
+  });
+  test('404: No search results', () => {
+    return request(app)
+    .get('/api/reviews?search=fish')
+    .expect(404)
+    .then((res) => {
+      expect(res.body.msg).toBe("404: No reviews match search")
+    })
+  });
+  test('200 including search and category', () => {
+    return request(app)
+    .get('/api/reviews?search=wolf&category=social_deduction')
+    .expect(200)
+    .then(({ body: { reviews } }) => {
       expect(reviews).toHaveLength(2)
       expect(reviews[0].title).toBe("Ultimate Werewolf")
+      expect(reviews[1].title).toBe("One Night Ultimate Werewolf")
     })
   });
 });
@@ -315,7 +333,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
   test("404: bad request, trying to post when review_id doesnt exist", () => {
     return request(app)
-      .post("/api/reviews/14/comments")
+      .post("/api/reviews/15/comments")
       .send({ username: "philippaclaire9", body: "I love this game!" })
       .expect(404)
       .then((res) => {
@@ -618,7 +636,7 @@ describe("POST /api/reviews", () => {
       .then(({ body: { review } }) => {
         expect(review.title).toBe("test review")
         expect(review.designer).toBe("test designer")
-        expect(review.review_id).toBe(14)
+        expect(review.review_id).toBe(15)
       })
   });
   test('400: missing request body category', () => {
@@ -673,7 +691,7 @@ describe('GET /api/users/:username/reviews', () => {
     .get("/api/users/mallionaire/reviews")
     .expect(200)
     .then(({ body: { reviews } }) => {
-      expect(reviews).toHaveLength(11)
+      expect(reviews).toHaveLength(12)
       expect(reviews[0].title).toBe("Agricola")
     })
   });
@@ -704,7 +722,7 @@ describe('DELETE /api/reviews/:review_id', () => {
       return db.query(
         `SELECT * FROM reviews`
       ).then((reviews) =>{
-        expect(reviews.rows).toHaveLength(12)
+        expect(reviews.rows).toHaveLength(13)
       })
     })
   });

@@ -150,5 +150,17 @@ module.exports = [
     category: 'social deduction',
     created_at: new Date(788918400),
     votes: 16
+  },
+  {
+    title: "Werewolf in London",
+    designer: 'Test Designer',
+    owner: 'mallionaire',
+    review_img_url:
+      'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
+    review_body:
+      'This is a test review.',
+    category: 'dexterity',
+    created_at: new Date(788918400),
+    votes: 16
   }
 ];
