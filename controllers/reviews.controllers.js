@@ -3,7 +3,8 @@ const {
   patchReviewVote,
   fetchAllReviews,
   createReview,
-  fetchReviewsByUser
+  fetchReviewsByUser,
+  fetchReviewsBySearch
 } = require("../models/reviews.models");
 
 exports.getReviewById = (req, res, next) => {
@@ -80,3 +81,4 @@ exports.getReviewsByUser = (req, res, next) => {
     next(err);
   })
 }
+
