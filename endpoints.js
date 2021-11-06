@@ -17,7 +17,7 @@ exports.endpoints = {
   },
   "GET /api/reviews": {
     description: "serves an array of all reviews",
-    queries: ["category", "sort_by", "order"],
+    queries: ["category", "sort_by", "order", "search"],
     exampleResponse: {
       reviews: [
         {
@@ -141,6 +141,80 @@ exports.endpoints = {
           votes: 5,
           created_at: "2021-01-18T00:00:00.000Z",
           body: "I love this game"
+    }
+  },
+  "POST /api/categories" : {
+    description: "add a new category to the categories list",
+    exampleBody: {
+      slug: "action",
+      description: "A white-knuckle ride"
+    },
+    exampleResponse: {
+      slug: "action",
+      description: "A white-knuckle ride"
+    }
+  },
+  "POST /api/reviews" : {
+    description: "creates a brand new review",
+    exampleBody: {
+      title: "test review",
+      designer: "test designer",
+      owner: "user who wrote the review, references username from users",
+      review_body: "The main body of the review",
+      category: "references slug from categories table, returns 404 if category does not exist"
+    },
+    exampleResponse: {
+      review_id: 1,
+      title: "test review",
+      designer: "test designer",
+      owner: "user who wrote the review, references username from users",
+      review_img_url:
+        "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+      review_body: "The main body of the review",
+      category: "references slug from categories table, returns 404 if category does not exist",
+      created_at: "2021-01-18T00:00:00.000Z",
+      votes: 0,
+    }
+  },
+  "GET /api/users/:username/reviews" : {
+    description: "gets all reviews written by a single user",
+    exampleBody: "no body",
+    exampleResponse: [
+      {
+        review_id: 1,
+      title: "Agricola",
+      designer: "Uwe Rosenberg",
+      owner: "mallionaire",
+      review_img_url:
+        "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      review_body: "Farmyard fun!",
+      category: "euro game",
+      created_at: "2021-01-18T00:00:00.000Z",
+      votes: 1,
+      },
+    ]
+  },
+  "DELETE /api/reviews/:review_id" : {
+    description: "removes review by review_id",
+    exampleBody: "no body",
+    exampleResponse: "no response"
+  },
+  "PATCH: /api/reviews/:review_id/body" : {
+    description: "replaces current review body text and returns updated review",
+    exampleBody: {
+      review_body: "This game is amazing!"
+    },
+    exampleResponse: {
+      review_id: 1,
+      title: "Agricola",
+      designer: "Uwe Rosenberg",
+      owner: "mallionaire",
+      review_img_url:
+        "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      review_body: "This game is amazing!",
+      category: "euro game",
+      created_at: "2021-01-18T00:00:00.000Z",
+      votes: 1,
     }
   } 
 };
