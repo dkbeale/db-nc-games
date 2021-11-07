@@ -729,7 +729,7 @@ describe('GET /api/users/:username/reviews', () => {
   });
 });
 
-describe('DELETE /api/reviews/:review_id', () => {
+describe.only('DELETE /api/reviews/:review_id', () => {
   test('204: should delete review by id, returning nothing', () => {
     return request(app)
     .delete('/api/reviews/3')
@@ -739,6 +739,12 @@ describe('DELETE /api/reviews/:review_id', () => {
         `SELECT * FROM reviews`
       ).then((reviews) =>{
         expect(reviews.rows).toHaveLength(13)
+      }).then(() => {
+        return db.query(
+          'SELECT * FROM comments'
+        ).then((comments) => {
+          expect(comments.rows).toHaveLength(3)
+        })
       })
     })
   });
