@@ -5,6 +5,10 @@ require('dotenv').config({
   path: `${__dirname}/../.env.${ENV}`,
 });
 
+// require('dotenv').config({
+//   path: `${__dirname}/../.env.development`,
+// });
+
 const config =
   ENV === 'production'
     ? {

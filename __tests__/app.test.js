@@ -1,5 +1,6 @@
 const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
+const data = require("../db/data/development-data/index.js")
 const seed = require("../db/seeds/seed.js");
 const request = require("supertest");
 const app = require("../app");
@@ -729,7 +730,7 @@ describe('GET /api/users/:username/reviews', () => {
   });
 });
 
-describe.only('DELETE /api/reviews/:review_id', () => {
+describe('DELETE /api/reviews/:review_id', () => {
   test('204: should delete review by id, returning nothing', () => {
     return request(app)
     .delete('/api/reviews/3')

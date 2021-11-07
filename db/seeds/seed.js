@@ -59,7 +59,7 @@ const seed = (data) => {
           comment_id SERIAL PRIMARY KEY,
           author VARCHAR(50) NOT NULL
           REFERENCES users(username),
-          review_id INTEGER NOT NULL
+          review_id INTEGER
           REFERENCES reviews(review_id)
           ON DELETE CASCADE,
           votes INTEGER DEFAULT 0,
