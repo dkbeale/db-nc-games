@@ -18,7 +18,7 @@ app.all("/*", (req, res,) => {
 });
 app.use(handle404Err);
 app.use(handle400Err);
-app.use(handle200Err);
+
 
 
 module.exports = app;
