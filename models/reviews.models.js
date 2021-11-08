@@ -38,7 +38,6 @@ exports.patchReviewVote = (votes, reviewId, body) => {
 };
 
 exports.fetchAllReviews = (sort = "created_at", order = "desc", category, search) => {
-  
   const sortArray = [
     "review_id",
     "title",
@@ -51,6 +50,7 @@ exports.fetchAllReviews = (sort = "created_at", order = "desc", category, search
     "votes",
     "comment_count",
   ];
+  
   if (!sortArray.includes(sort)) {
     return Promise.reject({ status: 400, msg: "Invalid Sort By Query" });
   }
@@ -83,13 +83,10 @@ exports.fetchAllReviews = (sort = "created_at", order = "desc", category, search
     }
   }
 
-
-
   query += `
   GROUP BY reviews.review_id
   ORDER BY ${sort} ${order};`;
 
-  
   const promises = [db.query(query, queryParams)];
 
   if (category) {
@@ -106,7 +103,6 @@ exports.fetchAllReviews = (sort = "created_at", order = "desc", category, search
     if ((!cat || !cat.rows[0]) && category) {
       return Promise.reject({ status: 404, msg: "Category Does Not Exist" });
     }
-   
     return res.rows;
   });
 };

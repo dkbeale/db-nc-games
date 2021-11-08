@@ -1,10 +1,8 @@
 const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
-const data = require("../db/data/development-data/index.js")
 const seed = require("../db/seeds/seed.js");
 const request = require("supertest");
 const app = require("../app");
-const { get } = require("superagent");
 const { endpoints } = require("../endpoints");
 const { query } = require("express");
 

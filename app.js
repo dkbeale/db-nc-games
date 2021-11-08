@@ -19,9 +19,7 @@ app.all("/*", (req, res,) => {
 app.use(handle404Err);
 app.use(handle400Err);
 app.use(handle200Err);
-// app.use((err, req, res, next) => {
-//   console.log(err, "<<<<ERRRRRRROR");
-// });
+
 
 module.exports = app;
 

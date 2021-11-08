@@ -4,7 +4,6 @@ const {
   fetchAllReviews,
   createReview,
   fetchReviewsByUser,
-  fetchReviewsBySearch,
   removeReview,
   editReviewBody
 } = require("../models/reviews.models");
@@ -86,7 +85,6 @@ exports.getReviewsByUser = (req, res, next) => {
 
 exports.deleteReviews = (req, res, next) => {
   const { review_id: reviewId } = req.params
-  console.log(reviewId)
   removeReview(reviewId).then(() => {
     res.status(204).send({})
   }).catch((err) => {
